@@ -30,3 +30,15 @@ exports.getAllSweets = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.updateSweet = async (req, res) => {
+    try {
+        console.log(req.params.id);
+        const id = req.params.id || req.query.id;
+        const sweet = await Sweet.findByIdAndUpdate(id, req.body, { new: true });
+        if (!sweet) return res.status(404).json({ message: 'Sweet not found' });
+        res.json(sweet);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

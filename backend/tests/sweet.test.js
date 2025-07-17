@@ -40,4 +40,15 @@ describe('Sweet Shop APIs', () => {
         expect(res.body.length).toBe(1);
     });
 
+    it('should update a sweet', async () => {
+        const sweet = await Sweet.create({ name: 'Kaju Katli', category: 'sweet', price: 800, quantity: 5 });
+
+        const res = await request(app)
+            .put(`/api/sweets/${sweet._id}`)
+            .send({ price: 900 });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.price).toBe(900);
+    });
+
 });
