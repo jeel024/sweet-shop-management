@@ -32,4 +32,12 @@ describe('Sweet Shop APIs', () => {
         expect(res.body.name).toBe('Ladoo');
     });
 
+    it('should get all sweets', async () => {
+        await Sweet.create({ name: 'Jalebi', category: 'sweet', price: 150, quantity: 20 });
+
+        const res = await request(app).get('/api/sweets');
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).toBe(1);
+    });
+
 });

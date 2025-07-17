@@ -13,3 +13,20 @@ exports.addSweet = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getAllSweets = async (req, res) => {
+    try {
+        const { name, category, minPrice, maxPrice } = req.query;
+        const query = {};
+
+        if (name) query.name = { $regex: name, $options: 'i' };
+        if (category) query.category = category;
+        if (minPrice) query.price = { ...query.price, $gte: Number(minPrice) };
+        if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
+
+        const sweets = await Sweet.find(query);
+        res.json(sweets);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
