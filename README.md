@@ -1,25 +1,23 @@
-🍬 Sweet Shop Management System
+Sweet Shop Management System
 
-A simple Sweet Shop Management System , featuring CRUD operations, purchase, restock, search, sort, and responsive frontend.
+    A simple Sweet Shop Management System , featuring CRUD operations, purchase, restock, search, sort, and responsive frontend.
 
-🛠️ Tech Stack
+Tech Stack
 
 Backend:
 
-Node.js with Express.js
-
-MongoDB with Mongoose
-
-Jest & Supertest for backend testing
-
-CORS
+    Node.js with Express.js
+    MongoDB with Mongoose
+    Jest & Supertest for backend testing
+    CORS
 
 Frontend:
 
-ReactJS
+    ReactJS
+    Axios
+    TailwindCSS for styling
+    React Toastify for notifications
 
-Axios
+Screenshots
 
-TailwindCSS for styling
-
-React Toastify for notifications
+![view Sweets](image-1.png)

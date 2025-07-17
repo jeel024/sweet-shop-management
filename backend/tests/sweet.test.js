@@ -3,13 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const sweetRoutes = require('../routes/sweetRoutes');
 const Sweet = require('../models/Sweet');
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use('/api/sweets', sweetRoutes);
 
 beforeAll(async () => {
-    await mongoose.connect("mongodb+srv://jeel:jeel@cluster0.px2pswk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+    await mongoose.connect(process.env.MONGO_URI);
 });
 
 afterAll(async () => {
