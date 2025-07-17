@@ -1,4 +1,15 @@
-const SweetList = ({ sweets, onAction, onPurchaseClick, onRestockClick }) => {
+import { useState } from 'react';
+
+const SweetList = ({
+  sweets,
+  onAction,
+  onPurchaseClick,
+  onRestockClick,
+  onEditClick,
+  onDeleteClick,
+}) => {
+  const [showMenuId, setShowMenuId] = useState(null);
+
   if (!sweets.length)
     return (
       <p className="text-center text-gray-500 mt-10 text-lg">
@@ -11,8 +22,43 @@ const SweetList = ({ sweets, onAction, onPurchaseClick, onRestockClick }) => {
       {sweets.map((sweet) => (
         <div
           key={sweet._id}
-          className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow p-6 flex flex-col justify-between"
+          className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow p-6 flex flex-col justify-between relative"
         >
+          {/* Action Menu Button */}
+          <div className="absolute top-2 right-2">
+            <button
+              onClick={() =>
+                setShowMenuId(showMenuId === sweet._id ? null : sweet._id)
+              }
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ⋮
+            </button>
+
+            {showMenuId === sweet._id && (
+              <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+                <button
+                  onClick={() => {
+                    setShowMenuId(null);
+                    onEditClick(sweet);
+                  }}
+                  className="block px-4 py-2 text-left w-full hover:bg-gray-100"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    setShowMenuId(null);
+                    onDeleteClick(sweet);
+                  }}
+                  className="block px-4 py-2 text-left w-full hover:bg-gray-100 text-red-500"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+
           <div className="space-y-2">
             <center>
               <h2 className="text-2xl font-semibold text-orange-700">

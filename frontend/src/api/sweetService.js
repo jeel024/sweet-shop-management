@@ -21,4 +21,6 @@ export const purchaseSweet = (id, quantity) =>
 export const restockSweet = (id, quantity) =>
   axios.put(`${API_URL}/restock/${id}`, { quantity }).then(res => res.data);
 
+export const deleteSweet = (id) => axios.delete(`${API_URL}/${id}`).then(res => res.data);
 
+export const updateSweet = (id, sweetData) => axios.put(`${API_URL}/${id}`, sweetData).then(res => res.data);

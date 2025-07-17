@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { getAllSweets, addSweet } from './api/sweetService';
+import { getAllSweets, addSweet ,updateSweet } from './api/sweetService';
 import SweetList from './components/sweetList';
 import AddSweetModal from './components/AddSweetModal';
 import PurchaseModal from './components/PurchaseModal';
 import { purchaseSweet } from './api/sweetService';
 import RestockModal from './components/RestockModal';
+import ConfirmDeleteModal from './components/ConfirmDeleteModal';
 import { restockSweet } from './api/sweetService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { deleteSweet } from './api/sweetService';
 
 
 function App() {
@@ -19,6 +21,10 @@ function App() {
   const [selectedSweet, setSelectedSweet] = useState(null); 
   const [showRestockModal, setShowRestockModal] = useState(false);
   const [selectedRestockSweet, setSelectedRestockSweet] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedDeleteSweet, setSelectedDeleteSweet] = useState(null);
+  const [editSweet, setEditSweet] = useState(null);
+
 
   useEffect(() => { 
     fetchSweets();
@@ -28,11 +34,30 @@ function App() {
     getAllSweets().then(setSweets).catch(console.error);
   };
 
-  const handleAddSweet = (newSweet) => {
-    addSweet(newSweet)
-      .then(fetchSweets)
-      .catch(console.error);
-  };
+  const handleAddOrEditSweet = (id, sweetData) => {
+  if (id) {
+    updateSweet(id, sweetData)
+      .then(() => {
+        fetchSweets();
+        toast.success('Sweet updated successfully!');
+      })
+      .catch((err) => {
+        const msg = err.response?.data?.message || 'Failed to update sweet';
+        toast.error(msg);
+      });
+  } else {
+    addSweet(sweetData)
+      .then(() => {
+        fetchSweets();
+        toast.success('Sweet added successfully!');
+      })
+      .catch((err) => {
+        const msg = err.response?.data?.message || 'Failed to add sweet';
+        toast.error(msg);
+      });
+  }
+};
+
 
   const filteredSweets = sweets
     .filter(
@@ -76,6 +101,29 @@ const openRestockModal = (sweet) => {
   setShowRestockModal(true);
 };
 
+const handleDeleteSweet = (id) => {
+  deleteSweet(id)
+    .then(() => {
+      fetchSweets();
+      toast.success('Sweet deleted successfully!');
+    })
+    .catch((err) => {
+      const msg = err.response?.data?.message || 'Failed to delete sweet';
+      toast.error(msg);
+    });
+};
+
+const openDeleteModal = (sweet) => {
+  setSelectedDeleteSweet(sweet);
+  setShowDeleteModal(true);
+};
+
+const openEditModal = (sweet) => {
+  setEditSweet(sweet);
+  setShowModal(true);
+};
+
+
   return (
     
     <div className="min-h-screen bg-gray-100">
@@ -117,6 +165,8 @@ const openRestockModal = (sweet) => {
   onAction={fetchSweets}
   onPurchaseClick={openPurchaseModal}
   onRestockClick={openRestockModal}
+ onEditClick={openEditModal}
+  onDeleteClick={openDeleteModal} 
 />
 
 {showRestockModal && selectedRestockSweet && (
@@ -134,15 +184,36 @@ const openRestockModal = (sweet) => {
     onPurchase={handlePurchase}
 />
 )}
+
+{showDeleteModal && selectedDeleteSweet && (
+  <ConfirmDeleteModal
+    sweet={selectedDeleteSweet}
+    onClose={() => setShowDeleteModal(false)}
+    onDelete={handleDeleteSweet}
+/>
+)}
+
  
       </main>
 
       {showModal && (
-        <AddSweetModal
-          onClose={() => setShowModal(false)}
-          onAdd={handleAddSweet}
-        />
-      )}
+  <AddSweetModal
+    onClose={() => {
+      setShowModal(false);
+      setEditSweet(null);
+    }}
+    onSubmit={(data) => {
+      if (editSweet) {
+        handleAddOrEditSweet(editSweet._id, data);
+      } else {
+        handleAddOrEditSweet(null, data);
+      }
+    }}
+    sweetToEdit={editSweet}
+  />
+)}
+
+
     </div>
   );
 }
