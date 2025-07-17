@@ -69,5 +69,15 @@ describe('Sweet Shop APIs', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.quantity).toBe(15);
     });
-    
+
+    it('should purchase a sweet', async () => {
+        const sweet = await Sweet.create({ name: 'Rasgulla', category: 'sweet', price: 250, quantity: 5 });
+
+        const res = await request(app)
+            .put(`/api/sweets/purchase/${sweet._id}`)
+            .send({ quantity: 2 });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.quantity).toBe(3);
+    });
 });

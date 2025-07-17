@@ -65,3 +65,17 @@ exports.restockSweet = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.purchaseSweet = async (req, res) => {
+    try {
+        const { quantity } = req.body;
+        const sweet = await Sweet.findById(req.params.id);
+        if (!sweet) return res.status(404).json({ message: 'Sweet not found' });
+        if (sweet.quantity < quantity) return res.status(400).json({ message: 'Not enough stock' });
+        sweet.quantity -= Number(quantity);
+        await sweet.save();
+        res.json(sweet);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
