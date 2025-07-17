@@ -16,7 +16,7 @@ exports.addSweet = async (req, res) => {
 
 exports.getAllSweets = async (req, res) => {
     try {
-        const { name, category, minPrice, maxPrice } = req.query;
+        const { name, category, minPrice, maxPrice, sortBy, sortOrder } = req.query;
         const query = {};
 
         if (name) query.name = { $regex: name, $options: 'i' };
@@ -24,12 +24,18 @@ exports.getAllSweets = async (req, res) => {
         if (minPrice) query.price = { ...query.price, $gte: Number(minPrice) };
         if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
 
-        const sweets = await Sweet.find(query);
+        let sort = {};
+        if (sortBy) {
+            sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+        }
+
+        const sweets = await Sweet.find(query).sort(sort);
         res.json(sweets);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 exports.updateSweet = async (req, res) => {
     try {

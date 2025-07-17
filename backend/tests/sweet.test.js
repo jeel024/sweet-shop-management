@@ -80,4 +80,21 @@ describe('Sweet Shop APIs', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.quantity).toBe(3);
     });
+
+    it('should search and sort sweets', async () => {
+    await Sweet.insertMany([
+        { name: 'Belgium Waffle', category: 'waffle', price: 500, quantity: 5 },
+        { name: 'Maxican Waffle', category: 'waffle', price: 200, quantity: 15 },
+        { name: 'Jalebi', category: 'sweet', price: 300, quantity: 10 }
+    ]);
+
+    const res = await request(app).get('/api/sweets')
+        .query({ category: 'Waffle', sortBy: 'price', sortOrder: 'asc' });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(2);
+    expect(res.body[0].name).toBe('Belgium Waffle');
+    expect(res.body[1].name).toBe('Maxican Waffle');
+});
+
 });
