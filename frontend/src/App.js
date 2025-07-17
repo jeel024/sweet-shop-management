@@ -2,12 +2,23 @@ import { useEffect, useState } from 'react';
 import { getAllSweets, addSweet } from './api/sweetService';
 import SweetList from './components/sweetList';
 import AddSweetModal from './components/AddSweetModal';
+import PurchaseModal from './components/PurchaseModal';
+import { purchaseSweet } from './api/sweetService';
+import RestockModal from './components/RestockModal';
+import { restockSweet } from './api/sweetService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   const [sweets, setSweets] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState('');
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [selectedSweet, setSelectedSweet] = useState(null); 
+  const [showRestockModal, setShowRestockModal] = useState(false);
+  const [selectedRestockSweet, setSelectedRestockSweet] = useState(null);
 
   useEffect(() => { 
     fetchSweets();
@@ -36,7 +47,37 @@ function App() {
       return a[sortKey].localeCompare(b[sortKey]);
     });
 
+    const handlePurchase = (id, quantity) => {
+  purchaseSweet(id, quantity)
+    .then(() => {
+      fetchSweets();
+      toast.success('Purchase successful!');
+    })
+    .catch((err) => {
+      const msg = err.response?.data?.message || 'Purchase failed';
+      toast.error(msg);
+    });
+};
+
+
+const openPurchaseModal = (sweet) => {
+  setSelectedSweet(sweet);
+  setShowPurchaseModal(true);
+};
+
+const handleRestock = (id, quantity) => {
+  restockSweet(id, quantity)
+    .then(fetchSweets)
+    .catch(console.error);
+};
+
+const openRestockModal = (sweet) => {
+  setSelectedRestockSweet(sweet);
+  setShowRestockModal(true);
+};
+
   return (
+    
     <div className="min-h-screen bg-gray-100">
       <header className="bg-orange-500 text-white p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Sweet Shop Management</h1>
@@ -70,8 +111,30 @@ function App() {
             <option value="quantity">Quantity</option>
           </select>
         </div>
+<ToastContainer position="top-center" autoClose={3000} />
+        <SweetList
+  sweets={filteredSweets}
+  onAction={fetchSweets}
+  onPurchaseClick={openPurchaseModal}
+  onRestockClick={openRestockModal}
+/>
 
-        <SweetList sweets={filteredSweets} />
+{showRestockModal && selectedRestockSweet && (
+  <RestockModal
+    sweet={selectedRestockSweet}
+    onClose={() => setShowRestockModal(false)}
+    onRestock={handleRestock}
+/>
+)}
+
+{showPurchaseModal && selectedSweet && (
+  <PurchaseModal
+    sweet={selectedSweet}
+    onClose={() => setShowPurchaseModal(false)}
+    onPurchase={handlePurchase}
+/>
+)}
+ 
       </main>
 
       {showModal && (

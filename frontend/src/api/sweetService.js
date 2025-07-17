@@ -15,3 +15,10 @@ export const getAllSweets = async (query = {}) => {
 
 export const addSweet = (sweet) => axios.post(API_URL, sweet).then(res => res.data);
 
+export const purchaseSweet = (id, quantity) =>
+  axios.put(`${API_URL}/purchase/${id}`, { quantity }).then(res => res.data);
+
+export const restockSweet = (id, quantity) =>
+  axios.put(`${API_URL}/restock/${id}`, { quantity }).then(res => res.data);
+
+

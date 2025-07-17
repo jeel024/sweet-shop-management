@@ -1,4 +1,4 @@
-const SweetList = ({ sweets }) => {
+const SweetList = ({ sweets, onAction, onPurchaseClick, onRestockClick }) => {
   if (!sweets.length)
     return (
       <p className="text-center text-gray-500 mt-10 text-lg">
@@ -15,45 +15,50 @@ const SweetList = ({ sweets }) => {
         >
           <div className="space-y-2">
             <center>
-            <h2 className="text-2xl font-semibold text-orange-700">
-              {sweet.name}
-      
-            </h2>
+              <h2 className="text-2xl font-semibold text-orange-700">
+                {sweet.name}
+              </h2>
             </center>
-           <table className="w-full text-left text-gray-600">
-  <tbody>
-    <tr>
-      <th className="font-semibold pr-2">Category</th>
-            <td>:</td>
 
-      <td>{sweet.category}</td>
-    
-    </tr>
-    <tr>
-      <th className="font-semibold pr-2">Price</th>
+            <table className="w-full text-left text-gray-600">
+              <tbody>
+                <tr>
+                  <th className="font-semibold pr-2">Category</th>
                   <td>:</td>
-      <td>₹{sweet.price}</td>
-     
-    </tr>
-    <tr>
-      <th className="font-semibold pr-2">In Stock</th>
+                  <td>{sweet.category}</td>
+                </tr>
+                <tr>
+                  <th className="font-semibold pr-2">Price</th>
                   <td>:</td>
-
-      <td>{sweet.quantity}</td>
-      
-    </tr>
-  </tbody>
-</table>
-
+                  <td>₹{sweet.price}</td>
+                </tr>
+                <tr>
+                  <th className="font-semibold pr-2">In Stock</th>
+                  <td>:</td>
+                  <td>{sweet.quantity}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-md mt-4">
-            Purchase
-          </button>
+
+          <div className="flex space-x-2 mt-4">
+            <button
+              onClick={() => onPurchaseClick(sweet)}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-3 rounded-md w-1/2"
+            >
+              Purchase
+            </button>
+            <button
+              onClick={() => onRestockClick(sweet)}
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 rounded-md w-1/2"
+            >
+              Restock
+            </button>
+          </div>
         </div>
       ))}
     </div>
   );
 };
-
 
 export default SweetList;
