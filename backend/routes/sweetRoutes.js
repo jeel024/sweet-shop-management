@@ -6,5 +6,6 @@ router.post('/', sweetController.addSweet);
 router.get('/', sweetController.getAllSweets);
 router.put('/:id', sweetController.updateSweet);
 router.delete('/:id', sweetController.deleteSweet);
+router.put('/restock/:id', sweetController.restockSweet);
 
 module.exports = router;

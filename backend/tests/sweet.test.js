@@ -58,5 +58,16 @@ describe('Sweet Shop APIs', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toBe('Sweet deleted successfully');
     });
+
+    it('should restock a sweet', async () => {
+        const sweet = await Sweet.create({ name: 'Gulab Jamun', category: 'sweet', price: 300, quantity: 5 });
+
+        const res = await request(app)
+            .put(`/api/sweets/restock/${sweet._id}`)
+            .send({ quantity: 10 });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.quantity).toBe(15);
+    });
     
 });
