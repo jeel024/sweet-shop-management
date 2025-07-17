@@ -6,8 +6,10 @@ import AddSweetModal from './components/AddSweetModal';
 function App() {
   const [sweets, setSweets] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortKey, setSortKey] = useState('');
 
-  useEffect(() => {
+  useEffect(() => { 
     fetchSweets();
   }, []);
 
@@ -20,6 +22,19 @@ function App() {
       .then(fetchSweets)
       .catch(console.error);
   };
+
+  const filteredSweets = sweets
+    .filter(
+      (s) =>
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.category.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (!sortKey) return 0;
+      if (sortKey === 'price' || sortKey === 'quantity')
+        return a[sortKey] - b[sortKey];
+      return a[sortKey].localeCompare(b[sortKey]);
+    });
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -34,11 +49,36 @@ function App() {
       </header>
 
       <main className="p-4">
-        <SweetList sweets={sweets} />
+        <div className="flex flex-col md:flex-row md:justify-between items-center mb-4 space-y-2 md:space-y-0">
+          <input
+            type="text"
+            placeholder="Search by name or category"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border rounded-md px-3 py-2 w-full md:w-1/3"
+          />
+
+          <select
+            value={sortKey}
+            onChange={(e) => setSortKey(e.target.value)}
+            className="border rounded-md px-3 py-2 w-full md:w-1/5"
+          >
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+            <option value="category">Category</option>
+            <option value="price">Price</option>
+            <option value="quantity">Quantity</option>
+          </select>
+        </div>
+
+        <SweetList sweets={filteredSweets} />
       </main>
 
       {showModal && (
-        <AddSweetModal onClose={() => setShowModal(false)} onAdd={handleAddSweet} />
+        <AddSweetModal
+          onClose={() => setShowModal(false)}
+          onAdd={handleAddSweet}
+        />
       )}
     </div>
   );
