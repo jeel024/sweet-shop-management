@@ -51,4 +51,12 @@ describe('Sweet Shop APIs', () => {
         expect(res.body.price).toBe(900);
     });
 
+    it('should delete a sweet', async () => {
+        const sweet = await Sweet.create({ name: 'Barfi', category: 'sweet', price: 500, quantity: 3 });
+
+        const res = await request(app).delete(`/api/sweets/${sweet._id}`);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe('Sweet deleted successfully');
+    });
+    
 });

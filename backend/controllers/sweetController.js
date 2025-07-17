@@ -42,3 +42,13 @@ exports.updateSweet = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.deleteSweet = async (req, res) => {
+    try {
+        const sweet = await Sweet.findByIdAndDelete(req.params.id);
+        if (!sweet) return res.status(404).json({ message: 'Sweet not found' });
+        res.json({ message: 'Sweet deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
