@@ -12,3 +12,6 @@ export const getAllSweets = async (query = {}) => {
         throw err;
     }
 };
+
+export const addSweet = (sweet) => axios.post(API_URL, sweet).then(res => res.data);
+
